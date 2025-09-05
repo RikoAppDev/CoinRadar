@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.sp
 import dev.rikoapp.coinradar.crypto.domain.Coin
 import dev.rikoapp.coinradar.crypto.presentation.models.CoinUi
 import dev.rikoapp.coinradar.crypto.presentation.models.toCoinUi
-import dev.rikoapp.coinradar.ui.theme.CoinRadarTheme
+import dev.rikoapp.coinradar.core.presentation.ui.theme.CoinRadarTheme
 
 @Composable
 fun CoinListItem(

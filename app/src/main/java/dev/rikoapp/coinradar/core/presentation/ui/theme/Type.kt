@@ -1,4 +1,4 @@
-package dev.rikoapp.coinradar.ui.theme
+package dev.rikoapp.coinradar.core.presentation.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

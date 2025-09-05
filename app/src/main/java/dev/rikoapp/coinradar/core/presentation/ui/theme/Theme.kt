@@ -1,4 +1,4 @@
-package dev.rikoapp.coinradar.ui.theme
+package dev.rikoapp.coinradar.core.presentation.ui.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

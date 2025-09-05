@@ -1,5 +1,7 @@
 package dev.rikoapp.coinradar.crypto.presentation.coin_list
 
-sealed interface CoinListEvent {
+import dev.rikoapp.coinradar.core.presentation.util.UiText
 
+sealed interface CoinListEvent {
+    data class Error(val message: UiText) : CoinListEvent
 }

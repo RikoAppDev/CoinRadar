@@ -4,12 +4,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.rikoapp.coinradar.core.domain.util.onError
 import dev.rikoapp.coinradar.core.domain.util.onSuccess
+import dev.rikoapp.coinradar.core.presentation.util.UiText
+import dev.rikoapp.coinradar.core.presentation.util.asUiText
 import dev.rikoapp.coinradar.crypto.domain.CoinDataSource
 import dev.rikoapp.coinradar.crypto.presentation.models.toCoinUi
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -19,6 +22,9 @@ class CoinListViewModel(
 ) : ViewModel() {
 
     private var hasLoadedInitialData = false
+
+    private val _events = Channel<CoinListEvent>()
+    val events = _events.receiveAsFlow()
 
     private val _state = MutableStateFlow(CoinListState())
     val state = _state
@@ -41,26 +47,37 @@ class CoinListViewModel(
             }
 
             CoinListAction.OnRefresh -> {
-                loadCoins()
+                loadCoins(isRefresh = true)
             }
         }
     }
 
-    private fun loadCoins() {
+    private fun loadCoins(isRefresh: Boolean = false) {
         viewModelScope.launch {
-            _state.update { it.copy(isLoading = true) }
+            if (!isRefresh) {
+                _state.update { it.copy(isLoading = true) }
+            } else {
+                _state.update { it.copy(isRefreshing = true) }
+            }
 
             coinDataSource.getCoins()
                 .onSuccess { coins ->
                     _state.update {
                         it.copy(
                             isLoading = false,
+                            isRefreshing = false,
                             coins = coins.map { coin -> coin.toCoinUi() },
                         )
                     }
                 }
                 .onError { error ->
-                    _state.update { it.copy(isLoading = false) }
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            isRefreshing = false
+                        )
+                    }
+                    _events.send(CoinListEvent.Error(error.asUiText()))
                 }
         }
     }

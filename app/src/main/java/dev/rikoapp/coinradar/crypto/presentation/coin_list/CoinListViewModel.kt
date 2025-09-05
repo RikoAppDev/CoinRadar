@@ -2,12 +2,21 @@ package dev.rikoapp.coinradar.crypto.presentation.coin_list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.rikoapp.coinradar.core.domain.util.onError
+import dev.rikoapp.coinradar.core.domain.util.onSuccess
+import dev.rikoapp.coinradar.crypto.domain.CoinDataSource
+import dev.rikoapp.coinradar.crypto.presentation.models.toCoinUi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
-class CoinListViewModel : ViewModel() {
+class CoinListViewModel(
+    private val coinDataSource: CoinDataSource
+) : ViewModel() {
 
     private var hasLoadedInitialData = false
 
@@ -15,19 +24,44 @@ class CoinListViewModel : ViewModel() {
     val state = _state
         .onStart {
             if (!hasLoadedInitialData) {
-                /* TODO: Load initial data here */
+                loadCoins()
                 hasLoadedInitialData = true
             }
         }
         .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000L),
-            initialValue = CoinListState()
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5_000),
+            CoinListState()
         )
 
     fun onAction(action: CoinListAction) {
         when (action) {
-            else -> TODO("Handle actions")
+            is CoinListAction.OnCoinClick -> {
+
+            }
+
+            CoinListAction.OnRefresh -> {
+                loadCoins()
+            }
+        }
+    }
+
+    private fun loadCoins() {
+        viewModelScope.launch {
+            _state.update { it.copy(isLoading = true) }
+
+            coinDataSource.getCoins()
+                .onSuccess { coins ->
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            coins = coins.map { coin -> coin.toCoinUi() },
+                        )
+                    }
+                }
+                .onError { error ->
+                    _state.update { it.copy(isLoading = false) }
+                }
         }
     }
 }

@@ -11,7 +11,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import dev.rikoapp.coinradar.crypto.presentation.coin_list.CoinListScreenRoot
+import dev.rikoapp.coinradar.crypto.presentation.coin_list.CoinListViewModel
 import dev.rikoapp.coinradar.ui.theme.CoinRadarTheme
+import org.koin.compose.viewmodel.koinViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,28 +23,13 @@ class MainActivity : ComponentActivity() {
         setContent {
             CoinRadarTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
+                    val viewModel = koinViewModel<CoinListViewModel>()
+                    CoinListScreenRoot(
+                        modifier = Modifier.padding(innerPadding),
+                        viewModel = viewModel
                     )
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    CoinRadarTheme {
-        Greeting("Android")
     }
 }

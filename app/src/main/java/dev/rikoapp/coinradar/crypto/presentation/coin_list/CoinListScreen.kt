@@ -25,13 +25,15 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun CoinListScreenRoot(
+    modifier: Modifier = Modifier,
     viewModel: CoinListViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     CoinListScreen(
         state = state,
-        onAction = viewModel::onAction
+        onAction = viewModel::onAction,
+        modifier = modifier
     )
 }
 
@@ -39,7 +41,7 @@ fun CoinListScreenRoot(
 fun CoinListScreen(
     state: CoinListState,
     onAction: (CoinListAction) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier
 ) {
     if (state.isLoading) {
         Box(

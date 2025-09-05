@@ -1,4 +1,4 @@
-package dev.rikoapp.coinradar.util
+package dev.rikoapp.coinradar.core.domain.util
 
 typealias DomainError = Error
 

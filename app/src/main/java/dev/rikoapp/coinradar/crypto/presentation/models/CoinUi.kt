@@ -2,7 +2,7 @@ package dev.rikoapp.coinradar.crypto.presentation.models
 
 import androidx.annotation.DrawableRes
 import dev.rikoapp.coinradar.crypto.domain.Coin
-import dev.rikoapp.coinradar.util.getDrawableIdForCoin
+import dev.rikoapp.coinradar.core.presentation.util.getDrawableIdForCoin
 import java.text.NumberFormat
 import java.util.Locale
 

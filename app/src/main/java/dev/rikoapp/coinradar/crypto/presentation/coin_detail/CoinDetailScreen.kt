@@ -37,37 +37,19 @@ import androidx.compose.ui.tooling.preview.PreviewDynamicColors
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.rikoapp.coinradar.R
 import dev.rikoapp.coinradar.core.presentation.ui.theme.CoinRadarTheme
 import dev.rikoapp.coinradar.core.presentation.ui.theme.greenBackground
 import dev.rikoapp.coinradar.crypto.presentation.coin_detail.components.InfoCard
-import dev.rikoapp.coinradar.crypto.presentation.coin_list.CoinListAction
 import dev.rikoapp.coinradar.crypto.presentation.coin_list.CoinListState
-import dev.rikoapp.coinradar.crypto.presentation.coin_list.CoinListViewModel
 import dev.rikoapp.coinradar.crypto.presentation.coin_list.components.previewCoin
 import dev.rikoapp.coinradar.crypto.presentation.models.toDisplayableNumber
-import org.koin.androidx.compose.koinViewModel
 
-@Composable
-fun CoinDetailScreenRoot(
-    modifier: Modifier = Modifier,
-    viewModel: CoinListViewModel = koinViewModel()
-) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
-
-    CoinDetailScreen(
-        state = state,
-        onAction = viewModel::onAction,
-        modifier = modifier
-    )
-}
 
 @Composable
 fun CoinDetailScreen(
     state: CoinListState,
-    onAction: (CoinListAction) -> Unit,
-    modifier: Modifier
+    modifier: Modifier = Modifier
 ) {
     val contentColor = if (isSystemInDarkTheme()) {
         Color.White
@@ -201,7 +183,6 @@ private fun CoinDetailScreenPreview() {
             state = CoinListState(
                 selectedCoin = previewCoin
             ),
-            onAction = {},
             modifier = Modifier.background(
                 MaterialTheme.colorScheme.background
             )

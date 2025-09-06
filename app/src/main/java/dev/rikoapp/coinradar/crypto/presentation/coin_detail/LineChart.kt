@@ -25,8 +25,6 @@ import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewDynamicColors
-import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.rikoapp.coinradar.core.presentation.ui.theme.CoinRadarTheme
@@ -95,7 +93,7 @@ fun LineChart(
                     isShowingDataPoints =
                         (newSelectedDataPointIndex + visibleDataPointsIndices.first) in
                                 visibleDataPointsIndices
-                    if(isShowingDataPoints) {
+                    if (isShowingDataPoints) {
                         onSelectedDataPoint(dataPoints[newSelectedDataPointIndex])
                     }
                 }
@@ -115,7 +113,9 @@ fun LineChart(
         val maxXLabelWidth = xLabelTextLayoutResults.maxOfOrNull { it.size.width } ?: 0
         val maxXLabelHeight = xLabelTextLayoutResults.maxOfOrNull { it.size.height } ?: 0
         val maxXLabelLineCount = xLabelTextLayoutResults.maxOfOrNull { it.lineCount } ?: 0
-        val xLabelLineHeight = maxXLabelHeight / maxXLabelLineCount
+        val xLabelLineHeight = if (maxXLabelLineCount > 0) {
+            maxXLabelHeight / maxXLabelLineCount
+        } else 0
 
         val viewPortHeightPx = size.height -
                 (maxXLabelHeight + 2 * verticalPaddingPx
@@ -158,14 +158,14 @@ fun LineChart(
                     x = x,
                     y = viewPortBottomY + xAxisLabelSpacingPx
                 ),
-                color = if(index == selectedDataPointIndex) {
+                color = if (index == selectedDataPointIndex) {
                     style.selectedColor
                 } else style.unselectedColor
             )
 
-            if(showHelperLines) {
+            if (showHelperLines) {
                 drawLine(
-                    color = if(selectedDataPointIndex == index) {
+                    color = if (selectedDataPointIndex == index) {
                         style.selectedColor
                     } else style.unselectedColor,
                     start = Offset(
@@ -176,13 +176,13 @@ fun LineChart(
                         x = x + result.size.width / 2f,
                         y = viewPortTopY
                     ),
-                    strokeWidth = if(selectedDataPointIndex == index) {
+                    strokeWidth = if (selectedDataPointIndex == index) {
                         style.helperLinesThicknessPx * 1.8f
                     } else style.helperLinesThicknessPx
                 )
             }
 
-            if(selectedDataPointIndex == index) {
+            if (selectedDataPointIndex == index) {
                 val valueLabel = ValueLabel(
                     value = visibleDataPoints[index].y,
                     unit = unit
@@ -194,14 +194,14 @@ fun LineChart(
                     ),
                     maxLines = 1
                 )
-                val textPositionX = if(selectedDataPointIndex == visibleDataPointsIndices.last) {
+                val textPositionX = if (selectedDataPointIndex == visibleDataPointsIndices.last) {
                     x - valueResult.size.width
                 } else {
                     x - valueResult.size.width / 2f
                 } + result.size.width / 2f
                 val isTextInVisibleRange =
                     (size.width - textPositionX).roundToInt() in 0..size.width.roundToInt()
-                if(isTextInVisibleRange) {
+                if (isTextInVisibleRange) {
                     drawText(
                         textLayoutResult = valueResult,
                         topLeft = Offset(
@@ -232,7 +232,7 @@ fun LineChart(
                 color = style.unselectedColor
             )
 
-            if(showHelperLines) {
+            if (showHelperLines) {
                 drawLine(
                     color = style.unselectedColor,
                     start = Offset(
@@ -264,7 +264,7 @@ fun LineChart(
 
         val conPoints1 = mutableListOf<DataPoint>()
         val conPoints2 = mutableListOf<DataPoint>()
-        for(i in 1 until drawPoints.size) {
+        for (i in 1 until drawPoints.size) {
             val p0 = drawPoints[i - 1]
             val p1 = drawPoints[i]
 
@@ -277,10 +277,10 @@ fun LineChart(
         }
 
         val linePath = Path().apply {
-            if(drawPoints.isNotEmpty()) {
+            if (drawPoints.isNotEmpty()) {
                 moveTo(drawPoints.first().x, drawPoints.first().y)
 
-                for(i in 1 until drawPoints.size) {
+                for (i in 1 until drawPoints.size) {
                     cubicTo(
                         x1 = conPoints1[i - 1].x,
                         y1 = conPoints1[i - 1].y,
@@ -302,7 +302,7 @@ fun LineChart(
         )
 
         drawPoints.forEachIndexed { index, point ->
-            if(isShowingDataPoints) {
+            if (isShowingDataPoints) {
                 val circleOffset = Offset(
                     x = point.x,
                     y = point.y
@@ -313,7 +313,7 @@ fun LineChart(
                     center = circleOffset
                 )
 
-                if(selectedDataPointIndex == index) {
+                if (selectedDataPointIndex == index) {
                     drawCircle(
                         color = Color.White,
                         radius = 15f,

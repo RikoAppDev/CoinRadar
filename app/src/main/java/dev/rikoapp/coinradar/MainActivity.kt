@@ -12,6 +12,9 @@ import dev.rikoapp.coinradar.crypto.presentation.coin_list.CoinListScreenRoot
 import dev.rikoapp.coinradar.crypto.presentation.coin_list.CoinListViewModel
 import dev.rikoapp.coinradar.core.presentation.ui.theme.CoinRadarTheme
 import org.koin.compose.viewmodel.koinViewModel
+import androidx.compose.runtime.collectAsState
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.rikoapp.coinradar.crypto.presentation.coin_detail.CoinDetailScreenRoot
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,10 +24,23 @@ class MainActivity : ComponentActivity() {
             CoinRadarTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     val viewModel = koinViewModel<CoinListViewModel>()
-                    CoinListScreenRoot(
-                        modifier = Modifier.padding(innerPadding),
-                        viewModel = viewModel
-                    )
+                    val state = viewModel.state.collectAsStateWithLifecycle()
+
+                    when {
+                        state.value.selectedCoin != null -> {
+                            CoinDetailScreenRoot(
+                                modifier = Modifier.padding(innerPadding),
+                                viewModel = viewModel
+                            )
+                        }
+
+                        else -> {
+                            CoinListScreenRoot(
+                                modifier = Modifier.padding(innerPadding),
+                                viewModel = viewModel
+                            )
+                        }
+                    }
                 }
             }
         }

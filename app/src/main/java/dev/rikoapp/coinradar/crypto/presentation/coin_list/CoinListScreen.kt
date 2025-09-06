@@ -90,7 +90,6 @@ fun CoinListScreen(
             }
         }
     }
-
 }
 
 @PreviewLightDark

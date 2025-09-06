@@ -6,9 +6,9 @@ import dev.rikoapp.coinradar.core.domain.util.NetworkError
 import dev.rikoapp.coinradar.core.domain.util.Result
 import dev.rikoapp.coinradar.core.domain.util.map
 import dev.rikoapp.coinradar.crypto.data.mappers.toCoin
+import dev.rikoapp.coinradar.crypto.data.mappers.toCoinPrice
 import dev.rikoapp.coinradar.crypto.data.networking.dto.CoinHistoryDto
 import dev.rikoapp.coinradar.crypto.data.networking.dto.CoinsResponseDto
-import dev.rikoapp.coinradar.crypto.data.networking.dto.toCoinPrice
 import dev.rikoapp.coinradar.crypto.domain.Coin
 import dev.rikoapp.coinradar.crypto.domain.CoinDataSource
 import dev.rikoapp.coinradar.crypto.domain.CoinPrice
